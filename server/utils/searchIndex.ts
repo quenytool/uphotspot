@@ -75,13 +75,18 @@ async function buildIndex(): Promise<Fuse<SearchItem>> {
   return new Fuse(Array.from(seen.values()), fuseOptions)
 }
 
-export async function getSearchIndex(): Promise<Fuse<SearchItem>> {
-  const now = Date.now()
-  if (!fuseInstance || now - lastIndexTime > INDEX_TTL) {
-    fuseInstance = await buildIndex()
-    lastIndexTime = now
+export async function getSearchIndex(): Promise<Fuse<SearchItem> | null> {
+  try {
+    const now = Date.now()
+    if (!fuseInstance || now - lastIndexTime > INDEX_TTL) {
+      fuseInstance = await buildIndex()
+      lastIndexTime = now
+    }
+    return fuseInstance
+  } catch (e) {
+    console.error('Failed to build search index:', e)
+    return null
   }
-  return fuseInstance
 }
 
 export async function search(query: string, limit = 20): Promise<SearchResult[]> {
@@ -90,6 +95,10 @@ export async function search(query: string, limit = 20): Promise<SearchResult[]>
   }
 
   const fuse = await getSearchIndex()
+  if (!fuse) {
+    return []
+  }
+
   const results = fuse.search(query, { limit })
 
   return results.map(r => ({

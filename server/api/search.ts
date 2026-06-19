@@ -24,15 +24,21 @@ export default defineEventHandler(async (event): Promise<{
   }
 
   if (q === '__refresh__') {
-    await refreshIndex()
+    try {
+      await refreshIndex()
+    } catch {}
     return { query: q, count: 0, data: [] }
   }
 
-  const results = await search(q, limit)
-
-  return {
-    query: q,
-    count: results.length,
-    data: results,
+  try {
+    const results = await search(q, limit)
+    return {
+      query: q,
+      count: results.length,
+      data: results,
+    }
+  } catch (e) {
+    console.error('Search error:', e)
+    return { query: q, count: 0, data: [], error: 'Search temporarily unavailable' }
   }
 })

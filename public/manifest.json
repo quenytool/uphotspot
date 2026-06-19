@@ -1,0 +1,16 @@
+{
+  "name": "今日热榜",
+  "short_name": "热榜",
+  "description": "聚合全网热点，快速看清正在发生的事。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e5484d",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

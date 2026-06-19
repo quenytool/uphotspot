@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/public",
+  "installCommand": "npm install",
+  "framework": "nuxt",
+  "regions": ["iad1"],
+  "env": {
+    "UAPIS_API_HOST": "@uapis-api-host",
+    "UAPIS_API_KEY": "@uapis-api-key",
+    "NUXT_PUBLIC_SITE_URL": "@site-url"
+  }
+}

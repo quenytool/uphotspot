@@ -2,7 +2,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".output/public",
   "installCommand": "npm install",
-  "framework": "nuxt",
+  "framework": null,
   "regions": ["iad1"],
   "env": {
     "UAPIS_API_HOST": "@uapis-api-host",

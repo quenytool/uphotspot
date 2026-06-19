@@ -6,7 +6,14 @@
 import fs from 'fs/promises'
 import path from 'path'
 
-const SNAPSHOT_DIR = process.env.DATA_DIR || './data/snapshots'
+const SNAPSHOT_DIR = (() => {
+  const dir = process.env.DATA_DIR || './data/snapshots'
+  // 禁止绝对路径和父目录跳转
+  if (path.isAbsolute(dir) || dir.includes('..')) {
+    return './data/snapshots'
+  }
+  return dir
+})()
 
 export interface SnapshotItem {
   id: string
@@ -37,6 +44,9 @@ async function ensureDir() {
 export async function saveSnapshot(source: string, data: SnapshotItem[]): Promise<void> {
   await ensureDir()
   const today = new Date().toISOString().split('T')[0]
+  // 白名单校验 source
+  if (!/^[a-z0-9]+$/.test(source)) return
+  const safeSource = source.replace(/\.\./g, '')
   const filePath = path.join(SNAPSHOT_DIR, `${today}.json`)
 
   let snapshot: Snapshot
@@ -61,7 +71,12 @@ export async function saveSnapshot(source: string, data: SnapshotItem[]): Promis
 }
 
 export async function getSnapshot(date: string): Promise<Snapshot | null> {
-  const filePath = path.join(SNAPSHOT_DIR, `${date}.json`)
+  // 防止路径遍历攻击
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return null
+  }
+  const safeName = date.replace(/\.\./g, '')
+  const filePath = path.join(SNAPSHOT_DIR, `${safeName}.json`)
   try {
     const content = await fs.readFile(filePath, 'utf-8')
     return JSON.parse(content)

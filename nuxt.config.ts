@@ -18,6 +18,9 @@ export default defineNuxtConfig({
       link: [
         { rel: 'search', type: 'application/opensearchdescription+xml', href: '/opensearch.xml', title: '上升热点' },
       ],
+      script: [
+        { async: true, src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2579756571711911', crossorigin: 'anonymous' },
+      ],
     },
   },
 

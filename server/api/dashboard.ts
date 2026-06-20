@@ -105,7 +105,7 @@ export default defineEventHandler(async () => {
 
   // 爬虫运行状态 (基于快照文件)
   const crawlerStatus: CrawlerStatus[] = []
-  const sources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
+  const sources = ['weibo', 'zhihu', 'douyin', 'qq-news', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban-group', 'douban-movie', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr', 'sspai', 'jianshu']
 
   for (const source of sources) {
     const sourceSnapshots = snapshots.filter(s => s.sources[source])

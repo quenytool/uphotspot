@@ -90,15 +90,18 @@ const platformColors: Record<string, string> = {
   weibo: '#e6162d',
   zhihu: '#0066cc',
   douyin: '#161823',
-  weixin: '#52c41a',
+  'qq-news': '#ff4d4f',
   baidu: '#2932e1',
   toutiao: '#ff4d4f',
   '52pojie': '#1a7fc7',
-  douban: '#007722',
+  'douban-group': '#007722',
+  'douban-movie': '#ff4f00',
   github: '#333333',
   bilibili: '#fb7299',
   tieba: '#4575c0',
-  hupu: '#c80811'
+  hupu: '#c80811',
+  sspai: '#1e90ff',
+  jianshu: '#f09109',
 }
 </script>
 

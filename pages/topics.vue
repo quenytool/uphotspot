@@ -437,9 +437,11 @@ function formatHeat(heat: number): string {
 .platform-weibo { background: #e6162d; }
 .platform-zhihu { background: #0066cc; }
 .platform-douyin { background: #161823; }
-.platform-weixin { background: #52c41a; }
+.platform-qq-news { background: #ff4d4f; }
 .platform-baidu { background: #2932e1; }
 .platform-toutiao { background: #ff4d4f; }
+.platform-douban-group { background: #007722; }
+.platform-douban-movie { background: #ff4f00; }
 
 .cross-heat {
   font-size: 0.875rem;

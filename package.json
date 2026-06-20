@@ -19,6 +19,7 @@
   "dependencies": {
     "fuse.js": "^7.4.2",
     "nuxt": "^3.11.0",
+    "uapi-sdk-typescript": "^0.1.17",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"
   },

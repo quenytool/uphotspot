@@ -132,10 +132,13 @@ function getFallbackSearchItems(): SearchItem[] {
     toutiao: ['多地高温持续', '端午假期旅游', '新片上映资讯', '明星热搜话题'],
     '52pojie': ['Windows 系统优化技巧', '安卓逆向工程入门', '实用工具软件推荐', '编程开发经验分享', '网络安全技术讨论'],
     hellogithub: ['AI 开源项目精选', 'Python 工具库推荐', 'Go 高性能框架', 'JavaScript 前端组件库', 'Rust 系统编程入门'],
-    douban: ['近期高分新剧讨论升温', '独立书店城市漫游指南', '夏日影展片单整理'],
+    'douban-group': ['近期高分新剧讨论升温', '独立书店城市漫游指南', '夏日影展片单整理'],
+    'douban-movie': ['近期院线电影推荐', '高分影视作品盘点', '经典电影重温'],
     bilibili: ['知识区年度热门选题回顾', '游戏更新解析视频', '音乐现场混剪播放量走高'],
     hupu: ['总决赛关键球员表现讨论', '休赛期交易流言汇总', '跑步装备选择经验分享'],
     tieba: ['经典游戏社区活跃度回升', '数码新品体验贴持续更新', '校园生活讨论热度上升'],
+    sspai: ['效率工具推荐', '数字生活改造', '付费专栏精华', 'App 新版体验'],
+    jianshu: ['写作干货分享', '读书笔记精选', '生活感悟随笔', '职场经验复盘'],
   }
 
   const items: SearchItem[] = []
@@ -167,23 +170,26 @@ function buildSearchUrl(source: string, title: string): string {
     weibo: `https://s.weibo.com/weibo?q=${query}`,
     zhihu: `https://www.zhihu.com/search?type=content&q=${query}`,
     douyin: `https://www.douyin.com/search/${query}`,
-    weixin: `https://mp.weixinsearch.com/cgi-bin/search?q=${query}`,
+    'qq-news': `https://search.qq.com/news?q=${query}`,
     baidu: `https://www.baidu.com/s?wd=${query}`,
     toutiao: `https://so.toutiao.com/search?keyword=${query}`,
     '52pojie': `https://www.52pojie.cn/search.php?mod=forum&q=${query}`,
     hellogithub: `https://github.com/search?q=${query}&s=stars&type=repositories`,
-    douban: `https://www.douban.com/search?q=${query}`,
+    'douban-group': `https://www.douban.com/search?q=${query}`,
+    'douban-movie': `https://movie.douban.com/subject_search?q=${query}`,
     bilibili: `https://search.bilibili.com/all?keyword=${query}`,
     tieba: `https://tieba.baidu.com/f/search/res?ie=utf-8&qw=${query}`,
     hupu: `https://bbs.hupu.com/search?q=${query}`,
+    sspai: `https://sspai.com/search?q=${query}`,
+    jianshu: `https://www.jianshu.com/search?q=${query}`,
   }
   return searchUrls[source] || `https://www.baidu.com/s?wd=${query}`
 }
 
 function inferCategory(source: string): string {
-  if (['github', '52pojie', 'juejin'].includes(source)) return 'developer'
+  if (['github', '52pojie', 'juejin', 'sspai'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
-  if (['zhihu', 'tieba', 'douban'].includes(source)) return 'community'
+  if (['zhihu', 'tieba', 'douban-group', 'jianshu'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'
   return 'news'
 }

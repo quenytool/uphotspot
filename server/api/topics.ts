@@ -1,10 +1,11 @@
 import { analyzeTopics, type TopicCluster } from '../utils/topicAnalysis'
 import type { SnapshotItem } from '../utils/snapshotStorage'
+import { UapiClient } from 'uapi-sdk-typescript'
 
-const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
+const validSources = ['weibo', 'zhihu', 'douyin', 'qq-news', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban-group', 'douban-movie', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr', 'sspai', 'jianshu']
 
-const UAPIS_API_HOST = process.env.UAPIS_API_HOST || 'https://uapis.cn'
 const UAPIS_API_KEY = process.env.UAPIS_API_KEY || ''
+const uapiClient = UAPIS_API_KEY ? new UapiClient('https://uapis.cn', UAPIS_API_KEY) : null
 
 interface McpResponse {
   jsonrpc: string
@@ -45,7 +46,7 @@ export default defineEventHandler(async (event): Promise<{
           url: item.url || '#',
           source: src,
           rank: Number(item.index || 0) + 1,
-          heat: item.hot_value ? Number(item.hot_value).toLocaleString() : '',
+          heat: (item.hot_value && !isNaN(Number(item.hot_value))) ? Number(item.hot_value).toLocaleString() : '',
           category: inferCategory(src),
           createdAt: srcData.update_time || new Date().toISOString()
         })
@@ -69,49 +70,22 @@ export default defineEventHandler(async (event): Promise<{
 })
 
 function inferCategory(source: string): string {
-  if (['github', '52pojie', 'juejin'].includes(source)) return 'developer'
+  if (['github', '52pojie', 'juejin', 'sspai'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
-  if (['zhihu', 'tieba', 'douban'].includes(source)) return 'community'
+  if (['zhihu', 'tieba', 'douban-group', 'jianshu'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'
-  if (['36kr'].includes(source)) return 'news'
+  if (['36kr', 'qq-news', 'douban-movie'].includes(source)) return 'news'
   return 'news'
 }
 
 async function fetchFromMcp(source: string): Promise<any> {
-  if (!UAPIS_API_KEY) {
-    // 返回 fallback 数据用于测试
+  if (!uapiClient) {
     return getFallbackData(source)
   }
 
   try {
-    const response = await fetch(`${UAPIS_API_HOST}/mcp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: UAPIS_API_KEY,
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'tools/call',
-        params: {
-          name: 'get_misc_hotboard',
-          arguments: { type: source },
-        },
-        id: Date.now(),
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`MCP request failed: ${response.status}`)
-    }
-
-    const result: McpResponse = await response.json()
-    if (result.error || result.result?.isError) {
-      throw new Error('MCP error')
-    }
-
-    const dataText = result.result?.content?.[0]?.text || '{}'
-    return JSON.parse(dataText)
+    const response = await uapiClient.misc.getMiscHotboard({ type: source as any })
+    return response
   } catch {
     return getFallbackData(source)
   }
@@ -123,18 +97,21 @@ function buildFallbackSearchUrl(source: string, title: string): string {
     weibo: `https://s.weibo.com/weibo?q=${query}`,
     zhihu: `https://www.zhihu.com/search?type=content&q=${query}`,
     douyin: `https://www.douyin.com/search/${query}`,
-    weixin: `https://mp.weixinsearch.com/cgi-bin/search?q=${query}`,
+    'qq-news': `https://search.qq.com/news?q=${query}`,
     baidu: `https://www.baidu.com/s?wd=${query}`,
     toutiao: `https://so.toutiao.com/search?keyword=${query}`,
     '52pojie': `https://www.52pojie.cn/search.php?mod=forum&q=${query}`,
     hellogithub: `https://github.com/search?q=${query}&s=stars&type=repositories`,
-    douban: `https://www.douban.com/search?q=${query}`,
+    'douban-group': `https://www.douban.com/search?q=${query}`,
+    'douban-movie': `https://movie.douban.com/subject_search?q=${query}`,
     github: `https://github.com/search?q=${query}`,
     bilibili: `https://search.bilibili.com/all?keyword=${query}`,
     tieba: `https://tieba.baidu.com/f/search/res?ie=utf-8&qw=${query}`,
     hupu: `https://bbs.hupu.com/search?q=${query}`,
     juejin: `https://juejin.cn/search?query=${query}`,
     '36kr': `https://36kr.com/search/articles/${query}`,
+    sspai: `https://sspai.com/search?q=${query}`,
+    jianshu: `https://www.jianshu.com/search?q=${query}`,
   }
   return searchUrls[source] || `https://www.baidu.com/s?wd=${query}`
 }
@@ -146,7 +123,9 @@ function getFallbackData(source: string): any {
     douyin: ['高温避暑技巧', '端午出游打卡', '热门电影推荐', '明星热搜合集', '足球精彩瞬间'],
     baidu: ['全国高温预警', '端午出行指南', '暑期档电影', '社会热点追踪'],
     toutiao: ['多地高温持续', '端午假期旅游', '新片上映资讯', '明星热搜话题'],
-    weixin: ['高温天气健康提示', '端午出行攻略', '电影市场分析'],
+    'qq-news': ['高温天气健康提示', '端午出行攻略', '电影市场分析'],
+    'douban-group': ['近期高分新剧讨论升温', '独立书店城市漫游指南', '夏日影展片单整理'],
+    'douban-movie': ['近期院线电影推荐', '高分影视作品盘点', '经典电影重温'],
   }
 
   const titles = fallbackTitles[source] || fallbackTitles.toutiao

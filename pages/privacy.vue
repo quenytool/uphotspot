@@ -30,7 +30,7 @@ useSeoMeta({
           </p>
 
           <h2 class="section-title">联系我们</h2>
-          <p class="page-desc">如对隐私政策有疑问，请联系 contact@newsnow.example.com。</p>
+          <p class="page-desc">如对隐私政策有疑问，请联系 contact@uphotspot.com。</p>
         </article>
       </div>
     </main>

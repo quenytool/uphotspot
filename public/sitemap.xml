@@ -1,75 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://newsnow.example.com/</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>hourly</changefreq>
+    <loc>https://uphotspot.com/</loc>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/about</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/privacy</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/terms</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/feedback</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/feedback</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/hot</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/hot</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/news</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/tech</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/ent</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/community</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/finance</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/developer</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/shopping</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/brief</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/c/ai</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/search</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/trending</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/topics</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/daily</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/dashboard</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://uphotspot.com/n/weibo</loc>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/c/news</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/n/zhihu</loc>
     <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/c/tech</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/n/douyin</loc>
     <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/c/ent</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/n/weixin</loc>
     <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/c/community</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/n/baidu</loc>
     <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://newsnow.example.com/c/finance</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://uphotspot.com/n/toutiao</loc>
     <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://newsnow.example.com/c/developer</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://newsnow.example.com/sitemap.xml
+Sitemap: https://uphotspot.com/sitemap.xml

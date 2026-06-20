@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: '上升热点' },
         { property: 'og:description', content: '聚合全网热点，快速看清正在发生的事。' },
-        { property: 'og:url', content: process.env.NUXT_PUBLIC_SITE_URL || 'https://newsnow.example.com' },
+        { property: 'og:url', content: process.env.NUXT_PUBLIC_SITE_URL || 'https://uphotspot.com' },
       ],
       link: [
         { rel: 'search', type: 'application/opensearchdescription+xml', href: '/opensearch.xml', title: '上升热点' },
@@ -32,15 +32,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/global.css'],
 
-  routeRules: {
-    '/': { prerender: true },
-    '/c/**': { swr: 300 },
-    '/n/**': { swr: 300 },
-  },
-
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://newsnow.example.com',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://uphotspot.com',
     },
   },
 })

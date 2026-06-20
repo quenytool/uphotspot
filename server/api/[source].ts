@@ -1,4 +1,4 @@
-const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', 'v2ex', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
+const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
 
 const UAPIS_API_HOST = process.env.UAPIS_API_HOST || 'https://uapis.cn'
 const UAPIS_API_KEY = process.env.UAPIS_API_KEY || ''
@@ -55,7 +55,7 @@ async function normalizeSourceData(source: string) {
       data: list.map((item: any, idx: number) => ({
         id: String(item.index || idx + 1),
         title: item.title || '',
-        url: item.url || '#',
+        url: item.url || item.link || item.target?.url || item.target?.link || buildSearchUrl(source, item.title),
         source,
         rank: Number(item.index || idx + 1),
         heat: item.hot_value ? Number(item.hot_value).toLocaleString() : '',
@@ -119,12 +119,34 @@ async function fetchFromMcp(source: string): Promise<any> {
 }
 
 function inferCategory(source: string) {
-  if (['github', 'v2ex', 'juejin'].includes(source)) return 'developer'
+  if (['github', '52pojie', 'juejin'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
   if (['zhihu', 'tieba', 'douban'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'
   if (['36kr'].includes(source)) return 'news'
   return 'news'
+}
+
+function buildSearchUrl(source: string, title: string): string {
+  const query = encodeURIComponent(title)
+  const searchUrls: Record<string, string> = {
+    weibo: `https://s.weibo.com/weibo?q=${query}`,
+    zhihu: `https://www.zhihu.com/search?type=content&q=${query}`,
+    douyin: `https://www.douyin.com/search/${query}`,
+    weixin: `https://mp.weixinsearch.com/cgi-bin/search?q=${query}`,
+    baidu: `https://www.baidu.com/s?wd=${query}`,
+    toutiao: `https://so.toutiao.com/search?keyword=${query}`,
+    '52pojie': `https://www.52pojie.cn/search.php?mod=forum&q=${query}`,
+    hellogithub: `https://github.com/search?q=${query}&s=stars&type=repositories`,
+    douban: `https://www.douban.com/search?q=${query}`,
+    github: `https://github.com/search?q=${query}`,
+    bilibili: `https://search.bilibili.com/all?keyword=${query}`,
+    tieba: `https://tieba.baidu.com/f/search/res?ie=utf-8&qw=${query}`,
+    hupu: `https://bbs.hupu.com/search?q=${query}`,
+    juejin: `https://juejin.cn/search?query=${query}`,
+    '36kr': `https://36kr.com/search/articles/${query}`,
+  }
+  return searchUrls[source] || `https://www.baidu.com/s?wd=${query}`
 }
 
 function getFallbackList(source: string) {
@@ -135,7 +157,8 @@ function getFallbackList(source: string) {
     weixin: ['本周值得读的十篇深度文章', '县城消费新趋势观察', '通勤人群的早餐选择变化'],
     baidu: ['全国多地发布天气预警', '新能源车补能体验持续优化', '今年暑期档片单公布'],
     toutiao: ['多个城市优化公共交通接驳', '高校陆续公布招生计划', '新一轮消费券活动启动'],
-    v2ex: ['大家最近在用哪些效率工具？', '远程协作的文档规范怎么定？', '个人项目部署平台选择'],
+    '52pojie': ['Windows 系统优化技巧', '安卓逆向工程入门', '实用工具软件推荐', '编程开发经验分享', '网络安全技术讨论'],
+    hellogithub: ['AI 开源项目精选', 'Python 工具库推荐', 'Go 高性能框架', 'JavaScript 前端组件库', 'Rust 系统编程入门'],
     douban: ['近期高分新剧讨论升温', '独立书店城市漫游指南', '夏日影展片单整理'],
     github: ['热门开源项目发布新版本', '开发者关注轻量级 AI Agent 框架', '前端构建工具性能对比'],
     bilibili: ['知识区年度热门选题回顾', '游戏更新解析视频冲上热门', '音乐现场混剪播放量走高'],
@@ -148,7 +171,7 @@ function getFallbackList(source: string) {
   return titles.map((title, idx) => ({
     id: `${source}-${idx + 1}`,
     title,
-    url: '#',
+    url: buildSearchUrl(source, title),
     source,
     rank: idx + 1,
     heat: `${(98 - idx * 12).toLocaleString()} 万`,

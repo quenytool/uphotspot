@@ -3,6 +3,7 @@ dist/
 .output/
 .nuxt/
 .data/
+data/
 .env
 .env.local
 *.log

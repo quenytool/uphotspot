@@ -1,7 +1,7 @@
 import { analyzeTopics, type TopicCluster } from '../utils/topicAnalysis'
 import type { SnapshotItem } from '../utils/snapshotStorage'
 
-const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', 'v2ex', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
+const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
 
 const UAPIS_API_HOST = process.env.UAPIS_API_HOST || 'https://uapis.cn'
 const UAPIS_API_KEY = process.env.UAPIS_API_KEY || ''
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event): Promise<{
 })
 
 function inferCategory(source: string): string {
-  if (['github', 'v2ex', 'juejin'].includes(source)) return 'developer'
+  if (['github', '52pojie', 'juejin'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
   if (['zhihu', 'tieba', 'douban'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'
@@ -117,6 +117,28 @@ async function fetchFromMcp(source: string): Promise<any> {
   }
 }
 
+function buildFallbackSearchUrl(source: string, title: string): string {
+  const query = encodeURIComponent(title)
+  const searchUrls: Record<string, string> = {
+    weibo: `https://s.weibo.com/weibo?q=${query}`,
+    zhihu: `https://www.zhihu.com/search?type=content&q=${query}`,
+    douyin: `https://www.douyin.com/search/${query}`,
+    weixin: `https://mp.weixinsearch.com/cgi-bin/search?q=${query}`,
+    baidu: `https://www.baidu.com/s?wd=${query}`,
+    toutiao: `https://so.toutiao.com/search?keyword=${query}`,
+    '52pojie': `https://www.52pojie.cn/search.php?mod=forum&q=${query}`,
+    hellogithub: `https://github.com/search?q=${query}&s=stars&type=repositories`,
+    douban: `https://www.douban.com/search?q=${query}`,
+    github: `https://github.com/search?q=${query}`,
+    bilibili: `https://search.bilibili.com/all?keyword=${query}`,
+    tieba: `https://tieba.baidu.com/f/search/res?ie=utf-8&qw=${query}`,
+    hupu: `https://bbs.hupu.com/search?q=${query}`,
+    juejin: `https://juejin.cn/search?query=${query}`,
+    '36kr': `https://36kr.com/search/articles/${query}`,
+  }
+  return searchUrls[source] || `https://www.baidu.com/s?wd=${query}`
+}
+
 function getFallbackData(source: string): any {
   const fallbackTitles: Record<string, string[]> = {
     weibo: ['多地高温天气持续', '端午假期出行热度攀升', '国产电影新片预售开启', '黄子韬违停事件', '韩国门将巨大失误', '孙兴慜被嘲讽'],
@@ -133,7 +155,7 @@ function getFallbackData(source: string): any {
     list: titles.map((title, idx) => ({
       index: idx,
       title,
-      url: '#',
+      url: buildFallbackSearchUrl(source, title),
       hot_value: Math.floor(Math.random() * 1000000)
     }))
   }

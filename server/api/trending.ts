@@ -1,6 +1,6 @@
 import { calculateTrends, saveSnapshot, type TrendItem } from '../utils/snapshotStorage'
 
-const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', 'v2ex', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
+const validSources = ['weibo', 'zhihu', 'douyin', 'weixin', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr']
 
 const UAPIS_API_HOST = process.env.UAPIS_API_HOST || 'https://uapis.cn'
 const UAPIS_API_KEY = process.env.UAPIS_API_KEY || ''
@@ -52,7 +52,7 @@ export default defineEventHandler(async (event): Promise<{
 })
 
 function inferCategory(source: string) {
-  if (['github', 'v2ex', 'juejin'].includes(source)) return 'developer'
+  if (['github', '52pojie', 'juejin'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
   if (['zhihu', 'tieba', 'douban'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'

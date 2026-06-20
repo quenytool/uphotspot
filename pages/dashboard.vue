@@ -93,7 +93,7 @@ const platformColors: Record<string, string> = {
   weixin: '#52c41a',
   baidu: '#2932e1',
   toutiao: '#ff4d4f',
-  v2ex: '#3c8dbc',
+  '52pojie': '#1a7fc7',
   douban: '#007722',
   github: '#333333',
   bilibili: '#fb7299',

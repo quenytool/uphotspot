@@ -17,6 +17,7 @@
     "crawl:all": "npm run crawl:weibo && npm run crawl:zhihu && npm run crawl:douyin && npm run crawl:weixin && npm run crawl:baidu && npm run crawl:toutiao"
   },
   "dependencies": {
+    "fuse.js": "^7.4.2",
     "nuxt": "^3.11.0",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"

@@ -26,8 +26,8 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { prerender: true },
-    '/c/**': { swr: 300 },
-    '/n/**': { swr: 300 },
+    '/c/**': { swr: 60 },
+    '/n/**': { swr: 60 },
   },
 
   css: ['~/assets/css/global.css'],

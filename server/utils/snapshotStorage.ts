@@ -28,7 +28,7 @@ export interface Snapshot {
 }
 
 function getBlobKey(date: string): string {
-  return `${BLOB_PREFIX}/${date}.json`
+  return `${date}.json`
 }
 
 export async function saveSnapshot(source: string, data: SnapshotItem[]): Promise<void> {
@@ -76,10 +76,21 @@ export async function getSnapshot(date: string): Promise<Snapshot | null> {
   }
 
   const key = getBlobKey(date)
+
+  // 使用 fetch 直接获取 Blob 数据
+  const blobUrl = `https://eoepuskkquubmyiw.private.blob.vercel-storage.com/${key}`
+  const token = process.env.BLOB_READ_WRITE_TOKEN
+
   try {
-    const blob = await get(key)
-    if (!blob) return null
-    const text = await blob.text()
+    const response = await fetch(blobUrl, {
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const text = await response.text()
     return JSON.parse(text)
   } catch {
     return null

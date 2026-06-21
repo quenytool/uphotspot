@@ -1,24 +1,11 @@
 /**
  * 历史快照存储
- * 存储每日热榜快照，用于计算趋势
+ * 使用 Vercel Blob 存储每日热榜快照
  */
 
-import fs from 'fs/promises'
-import path from 'path'
+import { put, get, list } from '@vercel/blob'
 
-function getSnapshotDir(): string {
-  if (process.env.DATA_DIR) {
-    // 禁止绝对路径和父目录跳转
-    if (path.isAbsolute(process.env.DATA_DIR) || process.env.DATA_DIR.includes('..')) {
-      return path.join(process.cwd(), 'data/snapshots')
-    }
-    return process.env.DATA_DIR
-  }
-  // 默认为项目根目录下的 data/snapshots
-  return path.join(process.cwd(), 'data/snapshots')
-}
-
-const SNAPSHOT_DIR = getSnapshotDir()
+const BLOB_PREFIX = 'snapshots'
 
 export interface SnapshotItem {
   id: string
@@ -40,24 +27,25 @@ export interface Snapshot {
   }>
 }
 
-async function ensureDir() {
-  try {
-    await fs.mkdir(SNAPSHOT_DIR, { recursive: true })
-  } catch {}
+function getBlobKey(date: string): string {
+  return `${BLOB_PREFIX}/${date}.json`
 }
 
 export async function saveSnapshot(source: string, data: SnapshotItem[]): Promise<void> {
-  await ensureDir()
   const today = new Date().toISOString().split('T')[0]
   // 白名单校验 source
   if (!/^[a-z0-9]+$/.test(source)) return
   const safeSource = source.replace(/\.\./g, '')
-  const filePath = path.join(SNAPSHOT_DIR, `${today}.json`)
 
+  // 获取当天已存在的快照
   let snapshot: Snapshot
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    snapshot = JSON.parse(content)
+    const existing = await getSnapshot(today)
+    snapshot = existing || {
+      date: today,
+      timestamp: new Date().toISOString(),
+      sources: {}
+    }
   } catch {
     snapshot = {
       date: today,
@@ -66,13 +54,19 @@ export async function saveSnapshot(source: string, data: SnapshotItem[]): Promis
     }
   }
 
+  // 更新该数据源的内容
   snapshot.sources[source] = {
-    data: data.slice(0, 100), // 最多保存100条
+    data: data.slice(0, 100),
     count: data.length
   }
   snapshot.timestamp = new Date().toISOString()
 
-  await fs.writeFile(filePath, JSON.stringify(snapshot, null, 2), 'utf-8')
+  // 保存到 Vercel Blob
+  const key = getBlobKey(today)
+  await put(key, JSON.stringify(snapshot), {
+    contentType: 'application/json',
+    access: 'private'
+  })
 }
 
 export async function getSnapshot(date: string): Promise<Snapshot | null> {
@@ -80,18 +74,19 @@ export async function getSnapshot(date: string): Promise<Snapshot | null> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return null
   }
-  const safeName = date.replace(/\.\./g, '')
-  const filePath = path.join(SNAPSHOT_DIR, `${safeName}.json`)
+
+  const key = getBlobKey(date)
   try {
-    const content = await fs.readFile(filePath, 'utf-8')
-    return JSON.parse(content)
+    const blob = await get(key)
+    if (!blob) return null
+    const text = await blob.text()
+    return JSON.parse(text)
   } catch {
     return null
   }
 }
 
 export async function getRecentSnapshots(days: number = 7): Promise<Snapshot[]> {
-  await ensureDir()
   const snapshots: Snapshot[] = []
   const now = new Date()
 

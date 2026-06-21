@@ -6,14 +6,19 @@
 import fs from 'fs/promises'
 import path from 'path'
 
-const SNAPSHOT_DIR = (() => {
-  const dir = process.env.DATA_DIR || './data/snapshots'
-  // 禁止绝对路径和父目录跳转
-  if (path.isAbsolute(dir) || dir.includes('..')) {
-    return './data/snapshots'
+function getSnapshotDir(): string {
+  if (process.env.DATA_DIR) {
+    // 禁止绝对路径和父目录跳转
+    if (path.isAbsolute(process.env.DATA_DIR) || process.env.DATA_DIR.includes('..')) {
+      return path.join(process.cwd(), 'data/snapshots')
+    }
+    return process.env.DATA_DIR
   }
-  return dir
-})()
+  // 默认为项目根目录下的 data/snapshots
+  return path.join(process.cwd(), 'data/snapshots')
+}
+
+const SNAPSHOT_DIR = getSnapshotDir()
 
 export interface SnapshotItem {
   id: string

@@ -1,6 +1,6 @@
 import { UapiClient } from 'uapi-sdk-typescript'
 
-const validSources = ['weibo', 'zhihu', 'douyin', 'qq-news', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban-group', 'douban-movie', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr', 'sspai', 'jianshu']
+const validSources = ['weibo', 'zhihu', 'douyin', 'qq-news', 'baidu', 'toutiao', '52pojie', 'hellogithub', 'douban-group', 'douban-movie', 'github', 'bilibili', 'hupu', 'tieba', 'juejin', '36kr', 'sspai', 'jianshu', 'quenytool']
 
 const UAPIS_API_KEY = process.env.UAPIS_API_KEY || ''
 const uapiClient = UAPIS_API_KEY ? new UapiClient('https://uapis.cn', UAPIS_API_KEY) : null
@@ -76,7 +76,7 @@ async function fetchFromMcp(source: string): Promise<any> {
 }
 
 function inferCategory(source: string) {
-  if (['github', '52pojie', 'juejin', 'sspai'].includes(source)) return 'developer'
+  if (['github', 'quenytool', '52pojie', 'juejin', 'sspai'].includes(source)) return 'developer'
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
   if (['zhihu', 'tieba', 'douban-group', 'jianshu'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'

@@ -9,7 +9,19 @@ export default defineEventHandler(async (event) => {
   const source = getRouterParam(event, 'source')
 
   if (source === 'all') {
-    const results = await Promise.all(validSources.map(async item => normalizeSourceData(item)))
+    // 串行请求避免并发过高导致部分失败
+    const results = []
+    for (const src of validSources) {
+      try {
+        const result = await normalizeSourceData(src)
+        results.push(result)
+        // 请求间隔，避免触发限流
+        await new Promise(r => setTimeout(r, 100))
+      } catch (e) {
+        console.warn(`[${src}] Failed:`, e)
+      }
+    }
+
     const allData = results.flatMap(item => item.data)
 
     return {
@@ -37,31 +49,45 @@ async function normalizeSourceData(source: string) {
     const data = await fetchFromMcp(source)
     const list = Array.isArray(data.list) ? data.list : []
 
+    const items = list.map((item: any, idx: number) => ({
+      id: String(item.index || idx + 1),
+      title: item.title || '',
+      url: item.url || item.link || item.target?.url || item.target?.link || buildSearchUrl(source, item.title),
+      source,
+      rank: Number(item.index || idx + 1),
+      heat: (item.hot_value && !isNaN(Number(item.hot_value))) ? Number(item.hot_value).toLocaleString() : '',
+      category: inferCategory(source),
+      tags: [],
+      createdAt: data.update_time || new Date().toISOString(),
+    }))
+
+    // 如果实际获取的数据为空，使用 fallback（而不是返回空）
+    if (items.length === 0) {
+      console.warn(`[${source}] Empty data from API, using fallback`)
+      const fallback = getFallbackList(source)
+      return {
+        source,
+        updatedAt: new Date().toISOString(),
+        count: fallback.length,
+        data: fallback,
+      }
+    }
+
     return {
       source,
       updatedAt: data.update_time || new Date().toISOString(),
-      count: list.length,
-      data: list.map((item: any, idx: number) => ({
-        id: String(item.index || idx + 1),
-        title: item.title || '',
-        url: item.url || item.link || item.target?.url || item.target?.link || buildSearchUrl(source, item.title),
-        source,
-        rank: Number(item.index || idx + 1),
-        heat: (item.hot_value && !isNaN(Number(item.hot_value))) ? Number(item.hot_value).toLocaleString() : '',
-        category: inferCategory(source),
-        tags: [],
-        createdAt: data.update_time || new Date().toISOString(),
-      })),
+      count: items.length,
+      data: items,
     }
   } catch (error) {
-    console.warn(`Use fallback hot data for ${source}:`, error)
-    const data = getFallbackList(source)
+    console.warn(`[${source}] Fetch failed, using fallback:`, error)
+    const fallback = getFallbackList(source)
 
     return {
       source,
       updatedAt: new Date().toISOString(),
-      count: data.length,
-      data,
+      count: fallback.length,
+      data: fallback,
     }
   }
 }

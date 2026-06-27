@@ -106,7 +106,8 @@ function inferCategory(source: string) {
   if (['douyin', 'bilibili'].includes(source)) return 'ent'
   if (['zhihu', 'tieba', 'douban-group', 'jianshu'].includes(source)) return 'community'
   if (['hupu'].includes(source)) return 'sports'
-  if (['36kr', 'qq-news', 'douban-movie'].includes(source)) return 'news'
+  if (['36kr'].includes(source)) return 'tech'
+  if (['qq-news', 'douban-movie'].includes(source)) return 'news'
   return 'news'
 }
 

@@ -3,5 +3,11 @@
   "outputDirectory": ".output/public",
   "installCommand": "npm install",
   "framework": null,
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "crons": [
+    {
+      "path": "/api/github-trending",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
